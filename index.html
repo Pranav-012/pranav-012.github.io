@@ -460,6 +460,7 @@ footer{text-align:center;padding:28px 52px;font-family:'Space Mono',monospace;fo
   <h2 class="section-title fade-in">Credentials</h2>
   <div class="certs-grid">
     <div class="cert-card fade-in"><div class="cert-badge">🏅</div><div><div class="cert-name">Databricks Certified Data Engineer Associate</div><div class="cert-org">Databricks</div></div></div>
+    <div class="cert-card fade-in"><div class="cert-badge">🎖️</div><div><div class="cert-name">Databricks Certified Data Engineer Professional</div><div class="cert-org">Databricks</div></div></div>
     <div class="cert-card fade-in"><div class="cert-badge">☁️</div><div><div class="cert-name">Azure Data Engineer Associate</div><div class="cert-org">Microsoft — DP-203</div></div></div>
     <div class="cert-card fade-in"><div class="cert-badge">🧠</div><div><div class="cert-name">Azure Data Scientist Associate</div><div class="cert-org">Microsoft — DP-100</div></div></div>
     <div class="cert-card fade-in"><div class="cert-badge">🐍</div><div><div class="cert-name">Microsoft Technology Associate — Python</div><div class="cert-org">Microsoft</div></div></div>
@@ -493,23 +494,24 @@ footer{text-align:center;padding:28px 52px;font-family:'Space Mono',monospace;fo
     <div>
       <p class="contact-intro fade-in">I'm open to data engineering and AI engineering opportunities. Whether it's a challenging data platform problem, a cloud migration, or an AI-integrated pipeline — let's talk.</p>
       <div class="contact-links fade-in">
-        <a href="mailto:pradahale@gmail.com" class="contact-link"><div class="contact-link-icon">✉️</div><div><div class="contact-link-label">EMAIL</div><div class="contact-link-value">pradahale@gmail.com</div></div></a>
+        <a href="/cdn-cgi/l/email-protection#51212330353039303d3411363c30383d7f323e3c" class="contact-link"><div class="contact-link-icon">✉️</div><div><div class="contact-link-label">EMAIL</div><div class="contact-link-value"><span class="__cf_email__" data-cfemail="a4d4d6c5c0c5ccc5c8c1e4c3c9c5cdc88ac7cbc9">[email&#160;protected]</span></div></div></a>
         <a href="tel:+919131917470" class="contact-link"><div class="contact-link-icon">📱</div><div><div class="contact-link-label">PHONE</div><div class="contact-link-value">+91 91319 17470</div></div></a>
         <a href="https://www.linkedin.com/in/pranav-dahale/" target="_blank" class="contact-link"><div class="contact-link-icon">💼</div><div><div class="contact-link-label">LINKEDIN</div><div class="contact-link-value">linkedin.com/in/pranav-dahale</div></div></a>
       </div>
     </div>
     <div class="contact-form fade-in">
-      <div class="form-field"><label>YOUR NAME</label><input type="text" placeholder="John Doe"></div>
-      <div class="form-field"><label>EMAIL ADDRESS</label><input type="email" placeholder="john@example.com"></div>
-      <div class="form-field"><label>MESSAGE</label><textarea placeholder="Tell me about the opportunity..."></textarea></div>
-      <a href="mailto:pradahale@gmail.com" class="btn-primary" style="text-align:center">Send Message</a>
+      <div class="form-field"><label>YOUR NAME</label><input type="text" id="f-name" placeholder="John Doe" required></div>
+      <div class="form-field"><label>EMAIL ADDRESS</label><input type="email" id="f-email" placeholder="john@example.com" required></div>
+      <div class="form-field"><label>MESSAGE</label><textarea id="f-msg" placeholder="Tell me about the opportunity..." required></textarea></div>
+      <button type="button" id="send-btn" class="btn-primary" style="text-align:center;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;width:100%;padding:13px 28px;">Send Message</button>
+      <div id="form-status" style="display:none;font-family:'Space Mono',monospace;font-size:11px;padding:12px 16px;border-radius:8px;text-align:center;margin-top:4px;"></div>
     </div>
   </div>
 </section>
 
-<footer>Designed &amp; Built for & by Pranav Dahale · Indore, India · 2026</footer>
+<footer>Designed &amp; Built for & by Pranav Dahale &middot; Indore, India &middot; 2026</footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ── 1. HERO CANVAS: floating data nodes ── */
 (function(){
   const canvas = document.getElementById('pipeline-canvas');
@@ -548,7 +550,6 @@ footer{text-align:center;padding:28px 52px;font-family:'Space Mono',monospace;fo
   }
   function draw(){
     ctx.clearRect(0,0,W,H);
-    // edges
     edges.forEach(([a,b])=>{
       const na=nodes[a],nb=nodes[b];
       const d=Math.hypot(na.x-nb.x,na.y-nb.y);
@@ -557,7 +558,6 @@ footer{text-align:center;padding:28px 52px;font-family:'Space Mono',monospace;fo
       ctx.strokeStyle=`rgba(99,102,241,${0.055*(1-d/280)})`;
       ctx.lineWidth=0.7;ctx.stroke();
     });
-    // packets
     packets.forEach(p=>{
       p.t+=p.speed; if(p.t>1)p.t=0;
       const [a,b]=p.edge,na=nodes[a],nb=nodes[b];
@@ -568,7 +568,6 @@ footer{text-align:center;padding:28px 52px;font-family:'Space Mono',monospace;fo
       ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);
       ctx.fillStyle=p.color+'0.14)';ctx.fill();
     });
-    // nodes
     nodes.forEach(n=>{
       n.x+=n.vx;n.y+=n.vy;
       if(n.x<30||n.x>W-30)n.vx*=-1;
@@ -644,7 +643,6 @@ document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
   let prog=0;
   function draw(){
     ctx.clearRect(0,0,W,H);
-    // rings
     [.25,.5,.75,1].forEach(s=>{
       ctx.beginPath();
       for(let i=0;i<N;i++){const p=pt(i,R*s);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);}
@@ -652,26 +650,22 @@ document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
       ctx.strokeStyle=`rgba(99,102,241,${s===1?.22:.1})`;
       ctx.lineWidth=s===1?1:.6;ctx.stroke();
     });
-    // spokes
     for(let i=0;i<N;i++){
       const p=pt(i,R);
       ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(p.x,p.y);
       ctx.strokeStyle='rgba(99,102,241,.1)';ctx.lineWidth=.6;ctx.stroke();
     }
-    // filled polygon
     const pr=Math.min(prog,1);
     ctx.beginPath();
     for(let i=0;i<N;i++){const p=pt(i,R*skills[i].val*pr);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);}
     ctx.closePath();
     ctx.fillStyle='rgba(99,102,241,.14)';ctx.fill();
     ctx.strokeStyle='rgba(129,140,248,.75)';ctx.lineWidth=1.8;ctx.stroke();
-    // dots
     for(let i=0;i<N;i++){
       const p=pt(i,R*skills[i].val*pr);
       ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);
       ctx.fillStyle='rgba(165,180,252,.9)';ctx.fill();
     }
-    // labels (static — always show)
     ctx.font='500 10px "Space Mono",monospace';
     ctx.textAlign='center';ctx.textBaseline='middle';
     for(let i=0;i<N;i++){
@@ -686,6 +680,60 @@ document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
   },{threshold:.3});
   ro.observe(canvas);
 })();
+
+/* ── 5. FORMSPREE CONTACT FORM ── */
+document.getElementById('send-btn').addEventListener('click', async function () {
+  const name    = document.getElementById('f-name').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const message = document.getElementById('f-msg').value.trim();
+  const status  = document.getElementById('form-status');
+  const btn     = document.getElementById('send-btn');
+
+  if (!name || !email || !message) {
+    status.style.display = 'block';
+    status.style.background = 'rgba(239,68,68,0.1)';
+    status.style.border = '1px solid rgba(239,68,68,0.3)';
+    status.style.color = '#f87171';
+    status.textContent = 'Please fill in all fields.';
+    return;
+  }
+
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  status.style.display = 'none';
+
+  try {
+    const res = await fetch('https://formspree.io/f/mlgoeown', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name, email, message })
+    });
+    status.style.display = 'block';
+    if (res.ok) {
+      status.style.background = 'rgba(52,211,153,0.1)';
+      status.style.border = '1px solid rgba(52,211,153,0.3)';
+      status.style.color = '#34d399';
+      status.textContent = '\u2713 Message sent! I\'ll get back to you soon.';
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-email').value = '';
+      document.getElementById('f-msg').value = '';
+      btn.textContent = 'Sent \u2713';
+    } else {
+      throw new Error('failed');
+    }
+  } catch (e) {
+    status.style.display = 'block';
+    status.style.background = 'rgba(239,68,68,0.1)';
+    status.style.border = '1px solid rgba(239,68,68,0.1)';
+    status.style.border = '1px solid rgba(239,68,68,0.3)';
+    status.style.color = '#f87171';
+    status.textContent = '\u2715 Something went wrong. Please try again.';
+    btn.textContent = 'Send Message';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+});
 </script>
 </body>
 </html>
